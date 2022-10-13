@@ -1,0 +1,34 @@
+{
+    "text": [
+      {
+        "msg":"Hello",
+        "reply":"Hello {name} How are you?"
+      },
+      {
+        "msg":"Bye",
+        "reply":"Good bye {name} Hope you enjoyed your stay on {channel}"
+      },
+      {
+        "msg":"GG",
+        "reply":"Good Game {name} Enjoyed the challenge"
+      }
+    ],
+    "intext": [
+      {
+        "msg":"Fuck",
+        "reply":"{name} Please don't swear!"
+      },
+      {
+        "msg":"Cheat",
+        "reply":"{name} We don't use cheats here!"
+      },
+      {
+        "msg":"Suck",
+        "reply":"Sorry {name} but sucking is not part of the service agreement! Good luck next time"
+      },
+      {
+        "msg":"I Was The Killer",
+        "reply":"Great run {name}, Enjoyed the Challenge!"
+      }
+        ]
+  }
