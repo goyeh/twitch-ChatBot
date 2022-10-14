@@ -32,7 +32,7 @@ func init() {
 			log.Print("Possible .env error:", r)
 		}
 	}()
-	flag.StringVar(&Val.configFilePath, "config", ".env", "config file path")
+	flag.StringVar(&Val.configFilePath, "config", "conf.env", "config file path")
 	flag.Parse()
 	lib.CheckErr(godotenv.Load(Val.configFilePath))
 	Val = Config{Val.configFilePath,
@@ -44,7 +44,7 @@ func init() {
 		getEnv("OOAUTH", "oauth:rlrasvkbmh57ct9luaesriom1ob5gs"),
 		getEnv("CHANNEL", "botmasterhk"),
 	}
-	log.Println("Logfile:", Val.AppName)
+	lib.Info("Logfile:", Val.AppName)
 }
 
 // Simple helper function to read an environment or return a default value

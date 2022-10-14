@@ -22,19 +22,6 @@ var (
 	Channel  string
 )
 
-/***********************
- *      _       _ _
- *     (_)     (_) |
- *      _ _ __  _| |_
- *     | | '_ \| | __|
- *     | | | | | | |_
- *     |_|_| |_|_|\__| */
-func init() {
-	Username = config.Val.Username
-	Oauth = config.Val.Oauth
-	Channel = config.Val.Channel
-}
-
 /***********************************
  *                      _
  *                     (_)
@@ -43,6 +30,11 @@ func init() {
  *     | | | | | | (_| | | | | |
  *     |_| |_| |_|\__,_|_|_| |_| */
 func main() {
+	Username = config.Val.Username
+	Oauth = config.Val.Oauth
+	Channel = config.Val.Channel
+	lib.Info("Connecting ", Username, " to ", Channel)
+
 	LoadResponces()
 	LoadBot()
 }
@@ -144,6 +136,8 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
 			Send("Great run, Enjoyed the Challenge!")
 		} else if strings.Contains(strings.ToUpper(msg.Text), "SUCK") {
 			Send("Sorry, but Sucking is not in my Service agreements, Try a different message!")
+		} else if strings.Contains(strings.ToUpper(msg.Text), "GG") {
+			Send("Was a great game, Loved playing with you too!")
 		}
 	}
 }
@@ -221,11 +215,11 @@ func LoadResponces() {
 	var fullMsg FullMsg
 	json.Unmarshal(byteResult, &fullMsg)
 	for i := 0; i < len(fullMsg.Text); i++ {
-		lib.Debug("Message: " + fullMsg.Text[i].Msg)
-		lib.Debug("Reply: " + fullMsg.Text[i].Reply)
+		// lib.Debug("Message: " + fullMsg.Text[i].Msg)
+		// lib.Debug("Reply: " + fullMsg.Text[i].Reply)
 	}
 	for i := 0; i < len(fullMsg.Intext); i++ {
-		lib.Debug("Message: " + fullMsg.Intext[i].Msg)
-		lib.Debug("Reply: " + fullMsg.Intext[i].Reply)
+		// lib.Debug("Message: " + fullMsg.Intext[i].Msg)
+		// lib.Debug("Reply: " + fullMsg.Intext[i].Reply)
 	}
 }
