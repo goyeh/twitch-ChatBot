@@ -1,34 +1,153 @@
-{
-    "text": [
-      {
+{ 
+  "NOTE": [
+  {
+    "msg":"Comment",
+    "reply":"The format of this file is important, remember to use the same structure, adding text and labels is  fine, only the events are program events, if you change the msg data, the event will not work, and be ignored. you can add reply statements, in adition, multiple replies will be picked up in random order. so feel free to add more."
+  }
+  ],
+  "events": [
+    {
+      "msg":"Join",
+      "reply":["Welcome {name}!","Nice to See you Again {name}"]
+    },
+    {
+      "msg":"Leave",
+      "reply":["{name} Has left the room!","Will {name} be missed?","Hope we see {name} agaon!"]
+    },
+    {
+      "msg":"Reconnect",
+      "reply":["{name} has reconnected! Welcome Back!","Well {name}, You were missed!","Didn't even know {name} Left. Welcome back anyway {name}!"]
+    }
+  ],
+  "sentences": [
+    {
+      "msg":"Hi",
+      "reply":["Hello {name} How are you?","Welcome {name}","Thanks for dropping in {name}"]
+    },
+    {
         "msg":"Hello",
-        "reply":"Hello {name} How are you?"
+        "reply":["Hello {name} How are you?","Welcome {name}","Thanks for dropping in {name}"]
       },
       {
         "msg":"Bye",
-        "reply":"Good bye {name} Hope you enjoyed your stay on {channel}"
+        "reply":["Good bye {name} Hope you enjoyed your stay on {channel}","Seeya {name} next time","{name} will be missed","Before you go {name}, Did you subscribe to {channel}?" ]
       },
       {
-        "msg":"GG",
-        "reply":"Good Game {name} Enjoyed the challenge"
+        "msg":"Good",
+        "reply":["Glad to Hear {name}, Always think positive on {channel}","Better than yeaterday I hope {name}!","{name} will be better tomorrow","Since you are Good {name}, Did you subscribe to {channel}?" ]
       }
     ],
-    "intext": [
+    "words": [
+      {
+        "msg":"Hello",
+        "reply":["Hello {name} How are you?","Welcome {name}","Thanks for dropping in {name}"]
+      },
       {
         "msg":"Fuck",
-        "reply":"{name} Please don't swear!"
+        "reply":["{name} Please don't swear!","Keep it clean {name}","I would give you a nasty look, But you already got one!"]
       },
       {
         "msg":"Cheat",
-        "reply":"{name} We don't use cheats here!"
+        "reply":["{name} We don't like cheats here!","Cheating is another form of insecurity","Who did?"]
       },
       {
         "msg":"Suck",
-        "reply":"Sorry {name} but sucking is not part of the service agreement! Good luck next time"
+        "reply":["Sorry {name} but sucking is not part of the service agreement! Good luck next time","couldn't say it better myself","When people say crap about others, They are reborn as Toilet rolls","I would give you a nasty look, But you already got one!"]
       },
       {
-        "msg":"I Was The Killer",
-        "reply":"Great run {name}, Enjoyed the Challenge!"
-      }
+        "msg":"The Killer",
+        "reply":["Great run {name}, Enjoyed the Challenge!","Good job, thanks for dopping in!","Great Chases, Enjoyed them all!"]
+      },
+      {
+        "msg":"GG",
+        "reply":["Good Game {name} Enjoyed the challenge","Thanks {name} we all enjoyed!","Only because you won {name}, LOL"]
+      },
+      {
+        "msg":"FAT",
+        "reply":["Paid for myself {name}!","Thanks {name} I feel better now!","Only because you lost {name}, LOL","When people say crap about others, They are reborn as Toilet rolls","I'm sorry, was I meant to be offended?"]
+      },
+      {
+        "msg":"INSULT",
+        "reply":[
+          "It looks like your face caught fire and someone tried to put it out with a hammer.",
+          "You're so fat you could sell shade.",
+          "I'm sorry, was I meant to be offended?",
+          "The only thing offending me is your face.",
+          "If I had a face like yours I'd sue my parents.",
+          "If you really want to know about mistakes, you should ask your parents.",
+          "I thought of you today. It reminded me to take the garbage out.",
+          "You're so ugly when you look in the mirror, your reflection looks away.",
+          "I typed “Idiot” into Google yesterday. Your picture came up.",
+          "No, those pants don't make you look fatter...how could they?",
+          "Hey, you have something on your chin… no, the 3rd one down.",
+          "Too bad you can't Photoshop your ugly personality.",
+          "If I wanted a bitch, I'd have bought a dog.",
+          "Your family tree must be a cactus because everyone on it is a prick.",
+          "You'll never be the man your mother is.",
+          "Your only purpose in life is as an organ donor.",
+          "Which sexual position produces the ugliest children? Ask your mother.",
+          "What's the difference between your girlfriend and a walrus? One has a moustache and smells of fish and the other is a walrus.",
+          "Jesus loves you… but everyone else thinks you're an asshole.",
+          "Calling you an idiot would be an insult to all stupid people.",
+          "There's no doubt about it. Your father should have pulled out earlier.",
+          "Did you know they used to be called “Jumpolines” until your mum jumped on one?",
+          "Gay? I'm straighter than the pole your mom dances on.",
+          "Don't be ashamed of who you are. That's your parent's job.",
+          "What doesn't kill you, disappoints me.",
+          "I've seen people like you before, but I had to pay admission.",
+          "Scientists say the universe is made up of neutrons, protons and electrons. They forgot to mention morons.",
+          "Why is it acceptable for you to be an idiot but not for me to point it out?",
+          "Your lips keep moving but all I hear is 'Blah, blah, blah.'",
+          "Just because you have one doesn't mean you need to act like one.",
+          "Someday you'll go far… and I hope you stay there.",
+          "Stupidity's not a crime, so you're free to go.",
+          "Your doctor called with your colonoscopy results. Good news....they found your head.",
+          "Save your breath ... you'll need it to blow up your date.",
+          "You're not stupid; you just have bad luck when thinking.",
+          "Please, keep talking. I always yawn when I am interested.",
+          "The zoo called. They're wondering how you got out of your cage?",
+          "Whatever kind of look you were going for, you missed.",
+          "I was hoping for a battle of wits but you appear to be unarmed.",
+          "Aww, it's so cute when you try to talk about things you don't understand.",
+          "I love the sound you make when you shut up.",
+          "I don't know what makes you so stupid, but it really works.",
+          "You are proof that evolution can go in reverse.",
+          "Brains aren't everything. In your case they're nothing.",
+          "When you were born, the doctor came out to the waiting room and said to your dad, “I'm very sorry. We did everything we could. But he pulled through.”",
+          "Grab a straw, because you suck.",
+          "I'm sorry I didn't get that...I don't speak idiot.",
+          "It's better to let someone think you're stupid than open your mouth and prove it.",
+          "Isn't there a bullet somewhere you could be jumping in front of?",
+          "Hey, your village called...they want their idiot back.",
+          "Were you born this stupid or did you take lessons?",
+          "I've been called worse by better.",
+          "You're such a beautiful, intelligent, wonderful person. Oh I'm sorry, I thought we were having a lying competition.",
+          "You should really come with a warning label.",
+          "I may love to shop but I'm not buying your bull.",
+          "Do you always act like an idiot or do you just show off when I'm around?",
+          "The people who tolerate you on a daily basis are the real heroes.",
+          "Don't you get tired of putting make up on two faces every morning?",
+          "I'd slap you but I don't want to make your face look any better.",
+          "You know, all the makeup and the clothes can't change what an ugly person you really are.",
+          "I just stepped in something that was smarter than you… and smelled better too.",
+          "You have the right to remain silent because whatever you say will probably be stupid anyway.",
+          "Jealousy is a disease. Get well soon.",
+          "I am returning your nose. I found it in my business.",
+          "I hear there's a new app called a sense of humor. You should try downloading it.",
+          "You're the reason God created the middle finger.",
+          "Don't blame me for your stupidity. Take that up with your mom and dad.",
+          "You know, you'd be much more likable if it wasn't for that hole in your mouth that noise comes out of.",
+          "I've got higher heels than your standards.",
+          "I'm an acquired taste. Don't like me, acquire some taste.",
+          "I'd like to see things from your point of view, but I can't seem to get my head that far up your butt.",
+          "If you're waiting for me to care, you better pack a lunch. It's going to be a while.",
+          "You can't Photoshop personality.",
+          "I just farted. That's as close as you're going to get to me giving a sh*t.",
+          "Quick...check your face! I just found your nose in my business.",
+          "You're not as dumb as you look. I mean, how could you be?",
+          "The jerk store called, they're running out of you.",
+          "Have a nice day, somewhere else."
         ]
+      }
+    ]
   }

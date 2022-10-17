@@ -35,6 +35,7 @@ func main() {
 	Channel = config.Val.Channel
 	lib.Info("Connecting ", Username, " to ", Channel)
 
+	LoadJokes()
 	LoadResponces()
 	LoadBot()
 }
@@ -63,6 +64,7 @@ func LoadBot() {
 	reader.OnShardLatencyUpdate(onShardLatencyUpdate)
 	reader.OnShardMessage(onShardMessage)
 	reader.OnShardChannelJoin(onJoined)
+	reader.OnShardChannelLeave(onLeave)
 
 	if err := reader.Join(Channel); err != nil {
 		panic(err)
@@ -83,8 +85,36 @@ func LoadBot() {
  *     | (_) | | | | |__| | (_) | | | | |
  *      \___/|_| |_|\____/ \___/|_|_| |_| *  */
 func onJoined(shardID int, msg1 string, msg2 string) {
-	Send(fmt.Sprintf("Welcome %s to %s Channel! Don't forget to subscribe. it helps us a lot!", msg2, msg1))
-	fmt.Printf("Shard #%s & #%s connected\n", msg1, msg2)
+	for i := range TwitchMsg.Events {
+		if strings.ToUpper(TwitchMsg.Events[i].Msg) == "JOIN" {
+			textToSend := TwitchMsg.Events[i].Reply[lib.RandomRange(0, len(TwitchMsg.Events[i].Reply))]
+			textToSend = strings.Replace(textToSend, "{name}", msg2, -1)
+			textToSend = strings.Replace(textToSend, "{channel}", msg1, -1)
+			Send(textToSend)
+			break
+		}
+	}
+	lib.Info("Shard", msg1, " & ", msg2, " connected\n")
+}
+
+/**********************************************
+ *                       _       _
+ *                      | |     (_)
+ *       ___  _ __      | | ___  _ _ __
+ *      / _ \| '_ \ _   | |/ _ \| | '_ \
+ *     | (_) | | | | |__| | (_) | | | | |
+ *      \___/|_| |_|\____/ \___/|_|_| |_| *  */
+func onLeave(shardID int, msg1 string, msg2 string) {
+	for i := range TwitchMsg.Events {
+		if strings.ToUpper(TwitchMsg.Events[i].Msg) == "LEAVE" {
+			textToSend := TwitchMsg.Events[i].Reply[lib.RandomRange(0, len(TwitchMsg.Events[i].Reply))]
+			textToSend = strings.Replace(textToSend, "{name}", msg2, -1)
+			textToSend = strings.Replace(textToSend, "{channel}", msg1, -1)
+			Send(textToSend)
+			break
+		}
+	}
+	lib.Info("Shard ", msg1, " & ", msg2, " connected\n")
 }
 
 /****************************************************************************************************
@@ -95,7 +125,7 @@ func onJoined(shardID int, msg1 string, msg2 string) {
  *     | (_) | | | |____) | | | | (_| | | | (_| | | \ \  __/ (_| (_) | | | | | | |  __/ (__| |_
  *      \___/|_| |_|_____/|_| |_|\__,_|_|  \__,_|_|  \_\___|\___\___/|_| |_|_| |_|\___|\___|\__| * */
 func onShardReconnect(shardID int) {
-	fmt.Printf("Shard #%d reconnected\n", shardID)
+	lib.Info("Shard ", shardID, " reconnected\n")
 }
 
 /*************************************************************************************************************************
@@ -108,7 +138,7 @@ func onShardReconnect(shardID int) {
  *                                                                               __/ |      | |
  *                                                                              |___/       |_|                         */
 func onShardLatencyUpdate(shardID int, latency time.Duration) {
-	fmt.Printf("Shard #%d has %dms ping\n", shardID, latency.Milliseconds())
+	lib.Info("Shard ", shardID, " has ", latency.Milliseconds(), "ping\n")
 }
 
 /*****************************************************************************************
@@ -121,24 +151,20 @@ func onShardLatencyUpdate(shardID int, latency time.Duration) {
  *                                                                           __/ |
  *                                                                          |___/       */
 func onShardMessage(shardID int, msg irc.ChatMessage) {
-	fmt.Printf("#%s %s: %s\n", msg.Channel, msg.Sender.DisplayName, msg.Text)
-	switch strings.ToUpper(msg.Text) {
-	case "HELLO":
-		Send(fmt.Sprint("Welcome, and Hello back to you ", msg.Sender.Username))
-	case "BYE":
-		Send("You leaving now, We will miss you, Hope your back soon!")
-	case "GG":
-		Send("Was a great game, Loved playing with you too!")
-	default:
-		if len(msg.Text) > 3 && strings.ToUpper(msg.Text[0:3]) == "BOT" {
+	if config.Val.Username != msg.Sender.Username {
+		lib.Info("Channel", msg.Channel, msg.Sender.DisplayName, msg.Text)
+
+		if len(msg.Text) > 0 && strings.ToUpper(msg.Text[0:1]) == ":" {
+			lib.Debug("Bot Command")
 			BotCommands(msg)
-		} else if strings.Contains(strings.ToUpper(msg.Text), "I WAS THE KILLER") {
-			Send("Great run, Enjoyed the Challenge!")
-		} else if strings.Contains(strings.ToUpper(msg.Text), "SUCK") {
-			Send("Sorry, but Sucking is not in my Service agreements, Try a different message!")
-		} else if strings.Contains(strings.ToUpper(msg.Text), "GG") {
-			Send("Was a great game, Loved playing with you too!")
+		} else if FullMessage(msg) {
+		} else if SomeWords(msg) {
+			lib.Debug("Word Check")
+		} else {
+			lib.Debug("Nothing to do")
 		}
+	} else {
+		lib.Info("Ignore message from Self", msg.Text)
 	}
 }
 
@@ -150,7 +176,8 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
  *     | |_) | (_) | |_| |___| (_) | | | | | | | | | | | (_| | | | | (_| \__ \
  *     |____/ \___/ \__|\_____\___/|_| |_| |_|_| |_| |_|\__,_|_| |_|\__,_|___/  * * */
 func BotCommands(msg irc.ChatMessage) {
-	command := msg.Text[4:]
+	command := msg.Text[1:]
+	lib.Debug("Command Requested:", command)
 	switch strings.ToUpper(command) {
 	case "HELLO":
 		Send(fmt.Sprint("Hello, This is BotMaster, What can I do for you ", msg.Sender.Username))
@@ -158,10 +185,12 @@ func BotCommands(msg irc.ChatMessage) {
 		Send("You want me to leave? What did I do wrong? You are mean! Very Mean!!")
 	case "COMMANDS", "HELP":
 		Send("To enter a Bot command, type the following:")
-		Send("bot [command] [press enter]")
-		Send("Example: bot hello ⤶")
+		Send(":[command] [press enter]")
+		Send("Example: :hello ⤶")
 		Send("List:")
 		Send("Commands or help")
+		Send("Joke for a Joke")
+		Send("Insult for a Insults")
 	default:
 		Send("Command not found!! Type Commands for a list!")
 	}
@@ -175,6 +204,7 @@ func BotCommands(msg irc.ChatMessage) {
  *      ____) |  __/ | | | (_| |
  *     |_____/ \___|_| |_|\__,_|  * *  */
 func Send(message string) {
+	lib.Debug("Message to Send:", message)
 	sendWriter := &irc.Conn{}
 	sendWriter.SetLogin(Username, Oauth)
 	if err := sendWriter.Connect(); err != nil {
@@ -195,31 +225,141 @@ func Send(message string) {
  *                                             | |
  *                                             |_|                               */
 type MsgFormat struct {
-	Msg   string `json:"msg"`
-	Reply string `json:"reply"`
+	Msg   string   `json:"msg"`
+	Reply []string `json:"reply"`
 }
 type FullMsg struct {
-	Text   []MsgFormat `json:"text"`
-	Intext []MsgFormat `json:"intext"`
+	Sentences []MsgFormat `json:"sentences"`
+	Words     []MsgFormat `json:"words"`
+	Events    []MsgFormat `json:"events"`
 }
 
-func LoadResponces() {
+var TwitchMsg FullMsg
+
+func LoadResponces() bool {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error Load Responces:", r)
+		}
+	}()
 	fileContent, err := os.Open("responces.json")
 	if err != nil {
 		lib.Error(err)
-		return
+		return false
 	}
 	lib.Info("Json Responces File loaded!")
 	defer fileContent.Close()
 	byteResult, _ := ioutil.ReadAll(fileContent)
-	var fullMsg FullMsg
-	json.Unmarshal(byteResult, &fullMsg)
-	for i := 0; i < len(fullMsg.Text); i++ {
-		// lib.Debug("Message: " + fullMsg.Text[i].Msg)
-		// lib.Debug("Reply: " + fullMsg.Text[i].Reply)
+	json.Unmarshal(byteResult, &TwitchMsg)
+
+	return true
+}
+
+/************_*******_********************
+ *          | |     | |
+ *          | | ___ | | _____  ___
+ *      _   | |/ _ \| |/ / _ \/ __|
+ *     | |__| | (_) |   <  __/\__ \
+ *      \____/ \___/|_|\_\___||___/ * * */
+type MsgJokes struct {
+	Jokes []string `json:"jokes"`
+}
+
+var FullJokes MsgJokes
+
+func LoadJokes() bool {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error Load Jokes:", r)
+		}
+	}()
+	fileContent, err := os.Open("jokes.json")
+	if err != nil {
+		lib.Error(err)
+		return false
 	}
-	for i := 0; i < len(fullMsg.Intext); i++ {
-		// lib.Debug("Message: " + fullMsg.Intext[i].Msg)
-		// lib.Debug("Reply: " + fullMsg.Intext[i].Reply)
+	lib.Info("Json Jokes File loaded!")
+	defer fileContent.Close()
+	byteResult, _ := ioutil.ReadAll(fileContent)
+	json.Unmarshal(byteResult, &FullJokes)
+	// for i1 := 0; i1 < len(FullJokes.Jokes); i1++ {
+	// 	lib.Debug("Joke: " + FullJokes.Jokes[i1])
+	// }
+	return true
+}
+
+/*******_____*****************_**********************_*******_**************
+ *     |  __ \               | |                    | |     | |
+ *     | |__) |__ _ _ __   __| | ___  _ __ ___      | | ___ | | _____
+ *     |  _  // _` | '_ \ / _` |/ _ \| '_ ` _ \ _   | |/ _ \| |/ / _ \
+ *     | | \ \ (_| | | | | (_| | (_) | | | | | | |__| | (_) |   <  __/
+ *     |_|  \_\__,_|_| |_|\__,_|\___/|_| |_| |_|\____/ \___/|_|\_\___|    */
+func RandomJokes() string {
+	return FullJokes.Jokes[lib.RandomRange(0, len(FullJokes.Jokes))]
+}
+
+/*******______*****_*_*__**__*************************************
+ *     |  ____|   | | |  \/  |
+ *     | |__ _   _| | | \  / | ___  ___ ___  __ _  __ _  ___
+ *     |  __| | | | | | |\/| |/ _ \/ __/ __|/ _` |/ _` |/ _ \
+ *     | |  | |_| | | | |  | |  __/\__ \__ \ (_| | (_| |  __/
+ *     |_|   \__,_|_|_|_|  |_|\___||___/___/\__,_|\__, |\___|
+ *                                                 __/ |
+ *                                                |___/       */
+func FullMessage(message irc.ChatMessage) (retVal bool) {
+	retVal = false
+	for i := range TwitchMsg.Sentences {
+		textToSee := strings.ToUpper(message.Text)
+		if strings.ToUpper(TwitchMsg.Sentences[i].Msg) == textToSee {
+			textToSend := TwitchMsg.Sentences[i].Reply[lib.RandomRange(0, len(TwitchMsg.Sentences[i].Reply))]
+			Send(Substitution(textToSend, message))
+			retVal = true
+			break
+		}
+
 	}
+	return retVal
+}
+
+/********_____*******************__**********__***********_**********
+ *      / ____|                  \ \        / /          | |
+ *     | (___   ___  _ __ ___   __\ \  /\  / /__  _ __ __| |___
+ *      \___ \ / _ \| '_ ` _ \ / _ \ \/  \/ / _ \| '__/ _` / __|
+ *      ____) | (_) | | | | | |  __/\  /\  / (_) | | | (_| \__ \
+ *     |_____/ \___/|_| |_| |_|\___| \/  \/ \___/|_|  \__,_|___/ */
+func SomeWords(message irc.ChatMessage) (retVal bool) {
+	retVal = false
+	for i := range TwitchMsg.Words {
+		textToSee := strings.ToUpper(message.Text)
+
+		if strings.Contains(textToSee, "JOKE") { // Capute joke cue
+			Send(RandomJokes())
+			retVal = true
+			break
+		}
+
+		if strings.Contains(textToSee, TwitchMsg.Words[i].Msg) {
+			textToSend := TwitchMsg.Words[i].Reply[lib.RandomRange(0, len(TwitchMsg.Words[i].Reply))]
+			Send(Substitution(textToSend, message))
+			retVal = true
+			break
+		}
+
+	}
+	return retVal
+}
+
+/********_____*******_*********_***_*_*********_***_******************
+ *      / ____|     | |       | | (_) |       | | (_)
+ *     | (___  _   _| |__  ___| |_ _| |_ _   _| |_ _  ___  _ __
+ *      \___ \| | | | '_ \/ __| __| | __| | | | __| |/ _ \| '_ \
+ *      ____) | |_| | |_) \__ \ |_| | |_| |_| | |_| | (_) | | | |
+ *     |_____/ \__,_|_.__/|___/\__|_|\__|\__,_|\__|_|\___/|_| |_|  */
+func Substitution(textToSend string, msg irc.ChatMessage) (textToReturn string) {
+	textToReturn = textToSend
+	textToReturn = strings.Replace(textToReturn, "{name}", msg.Sender.DisplayName, -1)
+	textToReturn = strings.Replace(textToReturn, "{channel}", msg.Sender.DisplayName, -1)
+	return textToReturn
 }

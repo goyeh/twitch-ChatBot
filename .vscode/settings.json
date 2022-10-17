@@ -1,12 +1,1 @@
-{
-"terminal.integrated.profiles.osx": {
-    "x86 bash": {
-        "path": "/usr/bin/arch",
-        "args": ["-arch", "arm_64", "/bin/bash"]
-    }
-},
-"terminal.integrated.defaultProfile.osx": "arm bash",
-"go.delveConfig": {
-
-}
-}
+{}

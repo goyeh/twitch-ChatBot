@@ -9,26 +9,23 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
-	"log/syslog"
 	"math"
 	"math/rand"
 	"net/http"
 	"os"
-	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
-const (
-	timeFormat = "2006-01-02 15:04:05"
-)
+//const (
+//	timeFormat = "2006-01-02 15:04:05"
+//)
 
 var (
-	logOut     *syslog.Writer
 	debugLevel string
-	appName    string
 )
 
 /***    _       _ _
@@ -40,17 +37,9 @@ var (
 func init() { // Set defaults,
 	var err error
 	debugLevel = "DEBUG INFO NOTICE WARN ERROR CRIT STDOUT"
-	logOut, err = syslog.New(syslog.LOG_INFO, filepath.Base(os.Args[0]))
-	log.SetOutput(logOut)
-	log.Println("Log Init:", logOut, err)
-}
-
-func LogInit(level string, name string) {
-	var err error
-	debugLevel = level
-	logOut, err = syslog.New(syslog.LOG_INFO, name)
-	log.SetOutput(logOut)
-	log.Println("Log Init:", logOut, err)
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+	log.Println("Log Init:", err)
 }
 
 /****   _             _    _      _
@@ -88,33 +77,31 @@ func logCore(level string, msg ...interface{}) {
 	if strings.Contains(debugLevel, level) {
 		switch level {
 		case "DEBUG":
-			logOut.Debug(fmt.Sprint(msg...))
+			log.Debug(fmt.Sprint(msg...))
 		case "INFO":
-			logOut.Info(fmt.Sprint(msg...))
-		case "NOTICE":
-			logOut.Notice(fmt.Sprint(msg...))
+			log.Info(fmt.Sprint(msg...))
 		case "WARN":
-			logOut.Warning(fmt.Sprint(msg...))
+			log.Warning(fmt.Sprint(msg...))
 		case "ERROR":
-			logOut.Err(fmt.Sprint(msg...))
+			log.Error(fmt.Sprint(msg...))
 		case "CRIT":
-			logOut.Crit(fmt.Sprint(msg...))
+			log.Fatal(fmt.Sprint(msg...))
 		}
 
 		if strings.Contains(debugLevel, "STDOUT") {
 			fmt.Println(msg...)
 		}
 	}
-	return
 }
 
 // ----------------------------------------------------------------------------
-//      ____                  __                   ____
-//     / __ \____ _____  ____/ /___  ____ ___     / __ \____ _____  ____ ____
-//    / /_/ / __ `/ __ \/ __  / __ \/ __ `__ \   / /_/ / __ `/ __ \/ __ `/ _ \
-//   / _, _/ /_/ / / / / /_/ / /_/ / / / / / /  / _, _/ /_/ / / / / /_/ /  __/
-//  /_/ |_|\__,_/_/ /_/\__,_/\____/_/ /_/ /_/  /_/ |_|\__,_/_/ /_/\__, /\___/
-//                                                               /____/
+//
+//	    ____                  __                   ____
+//	   / __ \____ _____  ____/ /___  ____ ___     / __ \____ _____  ____ ____
+//	  / /_/ / __ `/ __ \/ __  / __ \/ __ `__ \   / /_/ / __ `/ __ \/ __ `/ _ \
+//	 / _, _/ /_/ / / / / /_/ / /_/ / / / / / /  / _, _/ /_/ / / / / /_/ /  __/
+//	/_/ |_|\__,_/_/ /_/\__,_/\____/_/ /_/ /_/  /_/ |_|\__,_/_/ /_/\__, /\___/
+//	                                                             /____/
 func RandomRange(min int, max int) (randomRange int) {
 	rand.Seed(time.Now().UnixNano())
 	randomRange = rand.Intn(max-min) + min
@@ -122,10 +109,11 @@ func RandomRange(min int, max int) (randomRange int) {
 }
 
 // -------------------------------------------------
-//     ___ _           _     ___
-//    / __| |_  ___ __| |__ | __|_ _ _ _ ___ _ _
-//   | (__| ' \/ -_) _| / / | _|| '_| '_/ _ \ '_|
-//    \___|_||_\___\__|_\_\ |___|_| |_| \___/_|
+//
+//	  ___ _           _     ___
+//	 / __| |_  ___ __| |__ | __|_ _ _ _ ___ _ _
+//	| (__| ' \/ -_) _| / / | _|| '_| '_/ _ \ '_|
+//	 \___|_||_\___\__|_\_\ |___|_| |_| \___/_|
 func CheckErr(err error) (isErr bool) {
 	defer func() {
 		r := recover()
@@ -144,10 +132,11 @@ func CheckErr(err error) (isErr bool) {
 }
 
 // -------------------------------------------------
-//     ___ _           _  DB ___
-//    / __| |_  ___ __| |__ | __|_ _ _ _ ___ _ _
-//   | (__| ' \/ -_) _| / / | _|| '_| '_/ _ \ '_|
-//    \___|_||_\___\__|_\_\ |___|_| |_| \___/_|
+//
+//	  ___ _           _  DB ___
+//	 / __| |_  ___ __| |__ | __|_ _ _ _ ___ _ _
+//	| (__| ' \/ -_) _| / / | _|| '_| '_/ _ \ '_|
+//	 \___|_||_\___\__|_\_\ |___|_| |_| \___/_|
 func CheckDbErr(err error, db *sql.DB, msg ...interface{}) (isErr bool) {
 	defer func() {
 		r := recover()
@@ -164,13 +153,14 @@ func CheckDbErr(err error, db *sql.DB, msg ...interface{}) (isErr bool) {
 	return
 }
 
-//         _
-//        | |
-//     ___| | ___  ___  ___
-//    / __| |/ _ \/ __|/ _ \
-//   | (__| | (_) \__ \  __/
-//    \___|_|\___/|___/\___|
-//  Safe close routine
+//	      _
+//	     | |
+//	  ___| | ___  ___  ___
+//	 / __| |/ _ \/ __|/ _ \
+//	| (__| | (_) \__ \  __/
+//	 \___|_|\___/|___/\___|
+//
+// Safe close routine
 func DeferClose(c io.Closer) {
 	err := c.Close()
 	if err != nil {
@@ -298,7 +288,7 @@ func ReportToDomains(option string, message string, myServiceName string, myDns 
 var throttle = make(map[string]bool)
 
 func ThrottleAllow(ip string, timeout int) (retVal bool) {
-	if throttle[ip] == true {
+	if throttle[ip] {
 		Warn("-=Throttle=-To frequent calls from:", ip)
 		time.Sleep(time.Duration(timeout) * time.Second) //Random next cycle.
 		retVal = true                                    // false will result is receiging to frequent message
