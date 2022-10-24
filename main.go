@@ -72,7 +72,7 @@ func LoadBot() {
 	reader.OnShardMessage(onShardMessage)
 	reader.OnShardChannelJoin(onJoined)
 	reader.OnShardChannelLeave(onLeave)
-
+	reader.OnShardServerNotice(onServer)
 	if err := reader.Join(Channel); err != nil {
 		panic(err)
 	}
@@ -82,6 +82,10 @@ func LoadBot() {
 	fmt.Println("Stopping...")
 	reader.Close()
 	writer.Close()
+}
+
+func onServer(serverID int, msg irc.ServerNotice) {
+	lib.Debug("Server Notices:", msg.Type)
 }
 
 /**********************************************
