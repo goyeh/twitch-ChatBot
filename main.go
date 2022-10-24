@@ -48,6 +48,13 @@ func main() {
  *     | |___| (_) | (_| | (_| | |_) | (_) | |_
  *     |______\___/ \__,_|\__,_|____/ \___/ \__| */
 func LoadBot() {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error Loading Bot:", r)
+		}
+	}()
+
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGHUP)
 
@@ -85,6 +92,13 @@ func LoadBot() {
  *     | (_) | | | | |__| | (_) | | | | |
  *      \___/|_| |_|\____/ \___/|_|_| |_| *  */
 func onJoined(shardID int, msg1 string, msg2 string) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error When user Joins:", r)
+		}
+	}()
+
 	for i := range TwitchMsg.Events {
 		if strings.ToUpper(TwitchMsg.Events[i].Msg) == "JOIN" {
 			textToSend := TwitchMsg.Events[i].Reply[lib.RandomRange(0, len(TwitchMsg.Events[i].Reply))]
@@ -105,6 +119,13 @@ func onJoined(shardID int, msg1 string, msg2 string) {
  *     | (_) | | | | |__| | (_) | | | | |
  *      \___/|_| |_|\____/ \___/|_|_| |_| *  */
 func onLeave(shardID int, msg1 string, msg2 string) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error When user Leavs:", r)
+		}
+	}()
+
 	for i := range TwitchMsg.Events {
 		if strings.ToUpper(TwitchMsg.Events[i].Msg) == "LEAVE" {
 			textToSend := TwitchMsg.Events[i].Reply[lib.RandomRange(0, len(TwitchMsg.Events[i].Reply))]
@@ -125,6 +146,13 @@ func onLeave(shardID int, msg1 string, msg2 string) {
  *     | (_) | | | |____) | | | | (_| | | | (_| | | \ \  __/ (_| (_) | | | | | | |  __/ (__| |_
  *      \___/|_| |_|_____/|_| |_|\__,_|_|  \__,_|_|  \_\___|\___\___/|_| |_|_| |_|\___|\___|\__| * */
 func onShardReconnect(shardID int) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error Reconnecting:", r)
+		}
+	}()
+
 	lib.Info("Shard ", shardID, " reconnected\n")
 }
 
@@ -138,6 +166,13 @@ func onShardReconnect(shardID int) {
  *                                                                               __/ |      | |
  *                                                                              |___/       |_|                         */
 func onShardLatencyUpdate(shardID int, latency time.Duration) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error Getting Ping:", r)
+		}
+	}()
+
 	lib.Info("Shard ", shardID, " has ", latency.Milliseconds(), "ping\n")
 }
 
@@ -151,6 +186,13 @@ func onShardLatencyUpdate(shardID int, latency time.Duration) {
  *                                                                           __/ |
  *                                                                          |___/       */
 func onShardMessage(shardID int, msg irc.ChatMessage) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error When Receiving Message:", r)
+		}
+	}()
+
 	if config.Val.Username != msg.Sender.Username {
 		lib.Info("Channel", msg.Channel, msg.Sender.DisplayName, msg.Text)
 
@@ -176,6 +218,13 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
  *     | |_) | (_) | |_| |___| (_) | | | | | | | | | | | (_| | | | | (_| \__ \
  *     |____/ \___/ \__|\_____\___/|_| |_| |_|_| |_| |_|\__,_|_| |_|\__,_|___/  * * */
 func BotCommands(msg irc.ChatMessage) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error BotCommands:", r)
+		}
+	}()
+
 	command := msg.Text[1:]
 	lib.Debug("Command Requested:", command)
 	switch strings.ToUpper(command) {
@@ -204,6 +253,13 @@ func BotCommands(msg irc.ChatMessage) {
  *      ____) |  __/ | | | (_| |
  *     |_____/ \___|_| |_|\__,_|  * *  */
 func Send(message string) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error Sending:", r)
+		}
+	}()
+
 	lib.Debug("Message to Send:", message)
 	sendWriter := &irc.Conn{}
 	sendWriter.SetLogin(Username, Oauth)
@@ -284,9 +340,6 @@ func LoadJokes() bool {
 	defer fileContent.Close()
 	byteResult, _ := ioutil.ReadAll(fileContent)
 	json.Unmarshal(byteResult, &FullJokes)
-	// for i1 := 0; i1 < len(FullJokes.Jokes); i1++ {
-	// 	lib.Debug("Joke: " + FullJokes.Jokes[i1])
-	// }
 	return true
 }
 
@@ -297,6 +350,13 @@ func LoadJokes() bool {
  *     | | \ \ (_| | | | | (_| | (_) | | | | | | |__| | (_) |   <  __/
  *     |_|  \_\__,_|_| |_|\__,_|\___/|_| |_| |_|\____/ \___/|_|\_\___|    */
 func RandomJokes() string {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error Choosing Random Joke:", r)
+		}
+	}()
+
 	return FullJokes.Jokes[lib.RandomRange(0, len(FullJokes.Jokes))]
 }
 
@@ -309,6 +369,12 @@ func RandomJokes() string {
  *                                                 __/ |
  *                                                |___/       */
 func FullMessage(message irc.ChatMessage) (retVal bool) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error Reading Full Message:", r)
+		}
+	}()
 	retVal = false
 	for i := range TwitchMsg.Sentences {
 		textToSee := strings.ToUpper(message.Text)
@@ -330,6 +396,13 @@ func FullMessage(message irc.ChatMessage) (retVal bool) {
  *      ____) | (_) | | | | | |  __/\  /\  / (_) | | | (_| \__ \
  *     |_____/ \___/|_| |_| |_|\___| \/  \/ \___/|_|  \__,_|___/ */
 func SomeWords(message irc.ChatMessage) (retVal bool) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error Reading Some Words:", r)
+		}
+	}()
+
 	retVal = false
 	for i := range TwitchMsg.Words {
 		textToSee := strings.ToUpper(message.Text)
@@ -358,6 +431,13 @@ func SomeWords(message irc.ChatMessage) (retVal bool) {
  *      ____) | |_| | |_) \__ \ |_| | |_| |_| | |_| | (_) | | | |
  *     |_____/ \__,_|_.__/|___/\__|_|\__|\__,_|\__|_|\___/|_| |_|  */
 func Substitution(textToSend string, msg irc.ChatMessage) (textToReturn string) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Print("Error Replacing Tags:", r)
+		}
+	}()
+
 	textToReturn = textToSend
 	textToReturn = strings.Replace(textToReturn, "{name}", msg.Sender.DisplayName, -1)
 	textToReturn = strings.Replace(textToReturn, "{channel}", msg.Sender.DisplayName, -1)

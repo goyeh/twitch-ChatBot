@@ -3,15 +3,11 @@ package lib
 /* places as a simple wrapper library of self contained functions, no dependancies are required, and these functions will have default values that contain overwride funtions. */
 
 import (
-	"bytes"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"math"
 	"math/rand"
-	"net/http"
 	"os"
 	"runtime"
 	"strings"
@@ -234,44 +230,6 @@ type Services struct {
 	Expected string `json:"expected"`
 	Deps     string `json:"deps"`
 	Meta     string `json:"meta"`
-}
-
-func ReportToDomains(option string, message string, myServiceName string, myDns string, myIp string, myPort string, url string) {
-	defer func() {
-		r := recover()
-		if r != nil {
-			Error("Unable to reach Domains:", r, "You may need to add http:// to the domains url")
-		}
-	}()
-	switch option {
-	case "start":
-		todo := Services{myServiceName, myDns, myIp, myPort, "", "", "", "News Service"}
-		jsonReq, _ := json.Marshal(todo)
-		Debug("Starting monitor at:", url+"/start")
-		resp, err := http.Post(url+"/start", "application/json; charset=utf-8", bytes.NewBuffer(jsonReq))
-		CheckErr(err)
-		defer resp.Body.Close()
-		bodyBytes, _ := ioutil.ReadAll(resp.Body)
-		Info("INFO", "Reported to Domains Result:", string(bodyBytes))
-	case "ping":
-		resp, err := http.Get(url + "/ping/" + myServiceName)
-		CheckErr(err)
-		defer resp.Body.Close()
-		bodyBytes, _ := ioutil.ReadAll(resp.Body)
-		Info("Ping to Domains Result:", string(bodyBytes))
-	case "fail":
-		resp, err := http.Get(url + "/fail/" + myServiceName)
-		CheckErr(err)
-		defer resp.Body.Close()
-		bodyBytes, _ := ioutil.ReadAll(resp.Body)
-		Error("Fail to Domains Result:", string(bodyBytes))
-	case "error": // special handling since we want to pass the error message to domains
-		resp, err := http.Get(url + "/fail/" + myServiceName + "/" + message)
-		CheckErr(err)
-		defer resp.Body.Close()
-		bodyBytes, _ := ioutil.ReadAll(resp.Body)
-		Error("Fail to Domains Result:", string(bodyBytes))
-	}
 }
 
 /******************************************************************************
