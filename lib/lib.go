@@ -21,7 +21,7 @@ import (
 //)
 
 var (
-	debugLevel string
+	DebugLevel string
 )
 
 /***    _       _ _
@@ -32,7 +32,7 @@ var (
  *     |_|_| |_|_|\__|  * * */
 func init() { // Set defaults,
 	var err error
-	debugLevel = "DEBUG INFO NOTICE WARN ERROR CRIT STDOUT"
+	// debugLevel = config.Val.DEBUG //"DEBUG INFO NOTICE WARN ERROR CRIT STDOUT"
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetOutput(os.Stdout)
 	log.Println("Log Init:", err)
@@ -70,7 +70,7 @@ func logCore(level string, msg ...interface{}) {
 			fmt.Print("Error detected logging:", r)
 		}
 	}()
-	if strings.Contains(debugLevel, level) {
+	if strings.Contains(DebugLevel, level) {
 		switch level {
 		case "DEBUG":
 			log.Debug(fmt.Sprint(msg...))
@@ -84,7 +84,7 @@ func logCore(level string, msg ...interface{}) {
 			log.Fatal(fmt.Sprint(msg...))
 		}
 
-		if strings.Contains(debugLevel, "STDOUT") {
+		if strings.Contains(DebugLevel, "STDOUT") {
 			fmt.Println(msg...)
 		}
 	}

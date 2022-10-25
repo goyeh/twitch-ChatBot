@@ -40,6 +40,13 @@ func main() {
 	LoadBot()
 }
 
+func MonitorServer(reader *irc.Conn) {
+	//for {
+	lib.Debug("Channel:", reader.UserState.UserState)
+	//	time.Sleep(time.Duration(5) * time.Second)
+	//}
+}
+
 /*************************************************
  *      _                     _ ____        _
  *     | |                   | |  _ \      | |
@@ -67,12 +74,14 @@ func LoadBot() {
 	Send("BotMaster Has Arrived...")
 
 	reader := twitch.IRC()
+
 	reader.OnShardReconnect(onShardReconnect)
 	reader.OnShardLatencyUpdate(onShardLatencyUpdate)
 	reader.OnShardMessage(onShardMessage)
 	reader.OnShardChannelJoin(onJoined)
 	reader.OnShardChannelLeave(onLeave)
-	reader.OnShardServerNotice(onServer)
+	reader.OnShardChannelUpdate(onServerUpdate)
+	reader.OnShardServerNotice(onServerNotice)
 	if err := reader.Join(Channel); err != nil {
 		panic(err)
 	}
@@ -84,8 +93,12 @@ func LoadBot() {
 	writer.Close()
 }
 
-func onServer(serverID int, msg irc.ServerNotice) {
-	lib.Debug("Server Notices:", msg.Type)
+func onServerUpdate(serverID int, msg irc.RoomState) {
+	lib.Debug("Server Update:", msg)
+}
+
+func onServerNotice(serverID int, msg irc.ServerNotice) {
+	lib.Debug("Server Notices:", msg)
 }
 
 /**********************************************

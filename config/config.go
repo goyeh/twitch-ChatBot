@@ -14,7 +14,7 @@ import (
 
 type Config struct {
 	configFilePath string
-	DEBUG          int
+	DEBUG          string
 	VERSION        string
 	AppName        string
 	LOGDIR         string
@@ -36,7 +36,7 @@ func init() {
 	flag.Parse()
 	lib.CheckErr(godotenv.Load(Val.configFilePath))
 	Val = Config{Val.configFilePath,
-		getEnvAsInt("DEBUG", 2),
+		getEnv("DEBUG", "DEBUG INFO NOTICE WARN ERROR CRIT STDOUT"),
 		getEnv("VERSION", "0.0.1"),
 		filepath.Base(os.Args[0]),
 		getEnv("LOGDIR", "."),
@@ -45,6 +45,7 @@ func init() {
 		getEnv("CHANNEL", "botmasterhk"),
 	}
 	lib.Info("Logfile:", Val.AppName)
+	lib.DebugLevel = Val.DEBUG
 }
 
 // Simple helper function to read an environment or return a default value
