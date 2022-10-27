@@ -12,7 +12,7 @@
     },
     {
       "msg":"Leave",
-      "reply":["{name} Has left the room!","Will {name} be missed?","Hope we see {name} agaon!"]
+      "reply":["{name} Has left the room!","Will {name} be missed?","Hope we see {name} again!"]
     },
     {
       "msg":"Reconnect",
