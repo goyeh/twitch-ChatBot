@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "30e54ed6-0f7a-4a51-a4ee-aefb28fceb64",
+		"name": "Twitch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8112410"
+	},
+	"item": [
+		{
+			"name": "Streams",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "bam9ic5fjw97cpv1i2wthejopj4bb3",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Client-Id",
+						"value": "4xxjtvj3rqgz78dd9ks4dbred2b9fe",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.twitch.tv/helix/streams",
+					"protocol": "https",
+					"host": [
+						"api",
+						"twitch",
+						"tv"
+					],
+					"path": [
+						"helix",
+						"streams"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "StreamFetch",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "bam9ic5fjw97cpv1i2wthejopj4bb3",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Client-Id",
+						"value": "4xxjtvj3rqgz78dd9ks4dbred2b9fe",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.twitch.tv/helix/streams?user_id=773908092",
+					"protocol": "https",
+					"host": [
+						"api",
+						"twitch",
+						"tv"
+					],
+					"path": [
+						"helix",
+						"streams"
+					],
+					"query": [
+						{
+							"key": "game_id",
+							"value": "491487",
+							"disabled": true
+						},
+						{
+							"key": "language",
+							"value": "en",
+							"disabled": true
+						},
+						{
+							"key": "user_id",
+							"value": "773908092"
+						},
+						{
+							"key": "user_login",
+							"value": "archiear90",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAuth",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Client_Id",
+						"value": "4xxjtvj3rqgz78dd9ks4dbred2b9fe",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "9nxqasaa2eerdmknq774iru53tqo2p",
+						"type": "text"
+					},
+					{
+						"key": "grant_type",
+						"value": "client_credentials",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://id.twitch.tv/oauth2/token?client_id=4xxjtvj3rqgz78dd9ks4dbred2b9fe&client_secret=9nxqasaa2eerdmknq774iru53tqo2p&grant_type=client_credentials",
+					"protocol": "https",
+					"host": [
+						"id",
+						"twitch",
+						"tv"
+					],
+					"path": [
+						"oauth2",
+						"token"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "4xxjtvj3rqgz78dd9ks4dbred2b9fe"
+						},
+						{
+							"key": "client_secret",
+							"value": "9nxqasaa2eerdmknq774iru53tqo2p"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LiveChannels",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "bam9ic5fjw97cpv1i2wthejopj4bb3",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Client-Id",
+						"value": "4xxjtvj3rqgz78dd9ks4dbred2b9fe",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.twitch.tv/helix/search/channels?query=Archeiar90&=",
+					"protocol": "https",
+					"host": [
+						"api",
+						"twitch",
+						"tv"
+					],
+					"path": [
+						"helix",
+						"search",
+						"channels"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "Archeiar90"
+						},
+						{
+							"key": "",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
