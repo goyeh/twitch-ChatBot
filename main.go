@@ -70,11 +70,12 @@ func LoadBot() {
 	if err := writer.Connect(); err != nil {
 		panic("failed to start writer")
 	}
+	writer.Close()
 
 	Send("BotMaster Has Arrived...")
 
 	reader := twitch.IRC()
-
+	defer reader.Close()
 	reader.OnShardReconnect(onShardReconnect)
 	reader.OnShardLatencyUpdate(onShardLatencyUpdate)
 	reader.OnShardMessage(onShardMessage)
@@ -89,8 +90,6 @@ func LoadBot() {
 
 	<-sc
 	fmt.Println("Stopping...")
-	reader.Close()
-	writer.Close()
 }
 
 func onServerUpdate(serverID int, msg irc.RoomState) {
