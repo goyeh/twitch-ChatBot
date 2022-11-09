@@ -272,7 +272,7 @@ func Send(message string) {
 	defer func() {
 		r := recover()
 		if r != nil {
-			fmt.Print("Error Sending:", r)
+			lib.Error("Error Sending:", r)
 		}
 	}()
 
@@ -285,6 +285,7 @@ func Send(message string) {
 	defer sendWriter.Close()
 	sendWriter.Say(Channel, message)
 	time.Sleep(200 * time.Millisecond)
+	lib.Debug("Message Sent:", message)
 }
 
 /********************************************************************************
