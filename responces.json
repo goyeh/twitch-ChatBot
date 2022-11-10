@@ -1,4 +1,4 @@
-{ 
+{
   "NOTE": [
   {
     "msg":"Comment",
@@ -17,6 +17,10 @@
     {
       "msg":"Reconnect",
       "reply":["{name} has reconnected! Welcome Back!","Well {name}, You were missed!","Didn't even know {name} Left. Welcome back anyway {name}!"]
+    },
+    {
+      "msg":"Ignore",
+      "reply":["Streamelements","",""]
     }
   ],
   "sentences": [

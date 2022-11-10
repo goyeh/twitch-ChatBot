@@ -215,6 +215,7 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
 		if len(msg.Text) > 0 && strings.ToUpper(msg.Text[0:1]) == ":" {
 			lib.Debug("Bot Command")
 			BotCommands(msg)
+		} else if Ignore(msg) {
 		} else if FullMessage(msg) {
 		} else if SomeWords(msg) {
 			lib.Debug("Word Check")
@@ -224,6 +225,31 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
 	} else {
 		lib.Info("Ignore message from Self", msg.Text)
 	}
+}
+
+/*******_____********************************
+ *     |_   _|
+ *       | |  __ _ _ __   ___  _ __ ___
+ *       | | / _` | '_ \ / _ \| '__/ _ \
+ *      _| || (_| | | | | (_) | | |  __/
+ *     |_____\__, |_| |_|\___/|_|  \___|
+ *            __/ |
+ *           |___/                       */
+func Ignore(msg irc.ChatMessage) (retVal bool) {
+	retVal = true
+	for j := range TwitchMsg.Events {
+		if strings.ToUpper(TwitchMsg.Events[j].Msg) == "IGNORE" {
+			for k := range TwitchMsg.Events[j].Reply {
+				if strings.Contains(strings.ToUpper(msg.Text), TwitchMsg.Events[j].Reply[k]) { // Capute joke cue
+					retVal = true
+					lib.Info("Ignore Based on:", msg.Text, "Matching", TwitchMsg.Events[j].Reply[k])
+					break
+				}
+			}
+		}
+	}
+
+	return retVal //Means if text not in string then we are good to go.
 }
 
 /***********************************************************************************
