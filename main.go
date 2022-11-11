@@ -234,8 +234,11 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
 func Ignore(msg irc.ChatMessage) (retVal bool) {
 	retVal = false
 	for j := range TwitchMsg.Events {
+		lib.Debug("Getting Event:", TwitchMsg.Events[j].Msg)
 		if strings.ToUpper(TwitchMsg.Events[j].Msg) == "IGNORE" {
+			lib.Debug("Getting Replies:", TwitchMsg.Events[j].Reply)
 			for k := range TwitchMsg.Events[j].Reply {
+				lib.Debug("Getting Each Reply:", TwitchMsg.Events[j].Reply[k])
 				if strings.Contains(strings.ToUpper(msg.Text), TwitchMsg.Events[j].Reply[k]) { // Capute joke cue
 					retVal = true
 					lib.Info("Ignore Based on:", msg.Text, "Matching", TwitchMsg.Events[j].Reply[k])
