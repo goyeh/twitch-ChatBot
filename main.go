@@ -115,16 +115,19 @@ func onJoined(shardID int, msg1 string, msg2 string) {
 		}
 	}()
 
-	for i := range TwitchMsg.Events {
-		if strings.ToUpper(TwitchMsg.Events[i].Msg) == "JOIN" {
-			textToSend := TwitchMsg.Events[i].Reply[lib.RandomRange(0, len(TwitchMsg.Events[i].Reply))]
-			textToSend = strings.Replace(textToSend, "{name}", msg2, -1)
-			textToSend = strings.Replace(textToSend, "{channel}", msg1, -1)
-			Send(textToSend)
-			break
+	if !Ignore(msg1) { //Only execute if not ignored.
+
+		for i := range TwitchMsg.Events {
+			if strings.ToUpper(TwitchMsg.Events[i].Msg) == "JOIN" {
+				textToSend := TwitchMsg.Events[i].Reply[lib.RandomRange(0, len(TwitchMsg.Events[i].Reply))]
+				textToSend = strings.Replace(textToSend, "{name}", msg2, -1)
+				textToSend = strings.Replace(textToSend, "{channel}", msg1, -1)
+				Send(textToSend)
+				break
+			}
 		}
+		lib.Info("Shard", msg1, " & ", msg2, " connected\n")
 	}
-	lib.Info("Shard", msg1, " & ", msg2, " connected\n")
 }
 
 /************************_*******_************
@@ -140,17 +143,18 @@ func onLeave(shardID int, msg1 string, msg2 string) {
 			fmt.Print("Error When user Leavs:", r)
 		}
 	}()
-
-	for i := range TwitchMsg.Events {
-		if strings.ToUpper(TwitchMsg.Events[i].Msg) == "LEAVE" {
-			textToSend := TwitchMsg.Events[i].Reply[lib.RandomRange(0, len(TwitchMsg.Events[i].Reply))]
-			textToSend = strings.Replace(textToSend, "{name}", msg2, -1)
-			textToSend = strings.Replace(textToSend, "{channel}", msg1, -1)
-			Send(textToSend)
-			break
+	if !Ignore(msg1) { //Only execute if not ignored.
+		for i := range TwitchMsg.Events {
+			if strings.ToUpper(TwitchMsg.Events[i].Msg) == "LEAVE" {
+				textToSend := TwitchMsg.Events[i].Reply[lib.RandomRange(0, len(TwitchMsg.Events[i].Reply))]
+				textToSend = strings.Replace(textToSend, "{name}", msg2, -1)
+				textToSend = strings.Replace(textToSend, "{channel}", msg1, -1)
+				Send(textToSend)
+				break
+			}
 		}
+		lib.Info("Shard ", msg1, " & ", msg2, " connected\n")
 	}
-	lib.Info("Shard ", msg1, " & ", msg2, " connected\n")
 }
 
 /********************_____*_*******************_*_____**************************************_*******
@@ -211,7 +215,7 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
 		if len(msg.Text) > 0 && strings.ToUpper(msg.Text[0:1]) == ":" {
 			lib.Debug("Bot Command")
 			BotCommands(msg)
-		} else if Ignore(msg) {
+		} else if Ignore(msg.Text) {
 		} else if FullMessage(msg) {
 		} else if SomeWords(msg) {
 			lib.Debug("Word Check")
@@ -231,7 +235,7 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
  *     |_____\__, |_| |_|\___/|_|  \___|
  *            __/ |
  *           |___/                       */
-func Ignore(msg irc.ChatMessage) (retVal bool) {
+func Ignore(msg string) (retVal bool) {
 	retVal = false
 	for j := range TwitchMsg.Events {
 		lib.Debug("Getting Event:", TwitchMsg.Events[j].Msg)
@@ -239,9 +243,9 @@ func Ignore(msg irc.ChatMessage) (retVal bool) {
 			lib.Debug("Getting Replies:", TwitchMsg.Events[j].Reply)
 			for k := range TwitchMsg.Events[j].Reply {
 				lib.Debug("Getting Each Reply:", TwitchMsg.Events[j].Reply[k])
-				if strings.Contains(strings.ToUpper(msg.Text), TwitchMsg.Events[j].Reply[k]) { // Capute joke cue
+				if strings.Contains(strings.ToUpper(msg), TwitchMsg.Events[j].Reply[k]) { // Capute joke cue
 					retVal = true
-					lib.Info("Ignore Based on:", msg.Text, "Matching", TwitchMsg.Events[j].Reply[k])
+					lib.Info("Ignore Based on:", msg, "Matching", TwitchMsg.Events[j].Reply[k])
 					break
 				}
 			}
