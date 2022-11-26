@@ -156,6 +156,8 @@ func onLeave(shardID int, msg1 string, msg2 string) {
 			}
 		}
 		lib.Info("Shard ", msg1, " & ", msg2, " connected\n")
+	} else {
+		Send("Welcome stranger.......")
 	}
 }
 
